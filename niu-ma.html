@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打工人能耗标识</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+            background: linear-gradient(135deg, 
+                #0093E9 0%, 
+                #80D0C7 50%,
+                #48BBE9 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .custom-panel {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .info-label {
+            width: 100px;
+        }
+
+        .info-value {
+            flex: 1;
+            padding-left: 10px;
+        }
+
+        .level-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .level-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .level-label {
+            width: 80px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .level-content {
+            flex: 1;
+            padding: 10px;
+            color: white;
+            position: relative;
+            padding-right: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .level-content::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 0;
+            border-top: 19px solid transparent;
+            border-bottom: 19px solid transparent;
+            border-left: 15px solid;
+            transition: all 0.3s ease;
+        }
+
+        .level-1 { background: rgba(76, 175, 80, 0.8); }
+        .level-1::after { border-left-color: rgba(76, 175, 80, 0.8); }
+        
+        .level-2 { background: rgba(139, 195, 74, 0.8); }
+        .level-2::after { border-left-color: rgba(139, 195, 74, 0.8); }
+        
+        .level-3 { background: rgba(255, 235, 59, 0.8); }
+        .level-3::after { border-left-color: rgba(255, 235, 59, 0.8); }
+        
+        .level-4 { background: rgba(255, 152, 0, 0.8); }
+        .level-4::after { border-left-color: rgba(255, 152, 0, 0.8); }
+        
+        .level-5 { background: rgba(244, 67, 54, 0.8); }
+        .level-5::after { border-left-color: rgba(244, 67, 54, 0.8); }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .power-consumption {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .power-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .footer-text {
+            text-align: center;
+        }
+
+        /* 自定义面板样式 */
+        .custom-panel h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .input-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+            }
+            .custom-panel {
+                width: 100%;
+            }
+        }
+
+        /* 在 style 标签中添加下载按钮样式 */
+        .download-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <header class="header">
+                <div class="logo" id="mainTitle">Haier</div>
+                <div class="subtitle" id="subTitle">以无界生态共创无限可能</div>
+            </header>
+
+            <h1 class="title">打工人能耗标识</h1>
+
+            <div class="info">
+                <div class="info-row">
+                    <span class="info-label">打工人姓名</span>
+                    <span class="info-value" id="workerName">牛马</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">规格型号</span>
+                    <span class="info-value" id="modelNo">996-007（天选打工人）</span>
+                </div>
+            </div>
+
+            <div class="level-container">
+                <div class="level-row">
+                    <span class="level-label">能耗低</span>
+                    <div class="level-content level-1" id="level1">1 打开电脑摸鱼</div>
+                </div>
+                <div class="level-row">
+                    <span class="level-label"></span>
+                    <div class="level-content level-2" id="level2">2 随时待命收到</div>
+                </div>
+                <div class="level-row">
+                    <span class="level-label">中等</span>
+                    <div class="level-content level-3" id="level3">3 汇报工作进程</div>
+                </div>
+                <div class="level-row">
+                    <span class="level-label"></span>
+                    <div class="level-content level-4" id="level4">4 查看并理解全新得工作进程</div>
+                </div>
+                <div class="level-row">
+                    <span class="level-label">能耗高</span>
+                    <div class="level-content level-5" id="level5">5 电脑24小时不离身随时工作</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="power-consumption">
+                    <span>耗电量（小时/天）</span>
+                    <span class="power-value" id="powerConsumption">>8小时</span>
+                </div>
+                <div class="footer-text" id="footerText">
+                    天天加班加点没点素质是应该的！😭
+                </div>
+            </div>
+        </div>
+
+        <div class="custom-panel">
+            <!-- 添加下载按钮 -->
+            <button id="downloadBtn" class="download-btn">下载图片</button>
+            <h3>自定义内容</h3>
+            <div class="input-group">
+                <label>主标题</label>
+                <input type="text" id="mainTitleInput" placeholder="输入主标题">
+            </div>
+            <div class="input-group">
+                <label>副标题</label>
+                <input type="text" id="subTitleInput" placeholder="输入副标题">
+            </div>
+            <div class="input-group">
+                <label>打工人姓名</label>
+                <input type="text" id="nameInput" placeholder="输入姓名">
+            </div>
+            <div class="input-group">
+                <label>规格型号</label>
+                <input type="text" id="modelInput" placeholder="输入型号">
+            </div>
+            <div class="input-group">
+                <label>能耗等级描述（每行一个）</label>
+                <textarea id="levelsInput" placeholder="输入5个等级描述，每行一个"></textarea>
+            </div>
+            <div class="input-group">
+                <label>耗电量</label>
+                <input type="text" id="powerInput" placeholder="输入耗电量">
+            </div>
+            <div class="input-group">
+                <label>底部文案</label>
+                <input type="text" id="footerInput" placeholder="输入底部文案">
+            </div>
+        </div>
+    </div>
+
+   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+   <script>
+        // 监听输入变化并更新内容
+        document.getElementById('mainTitleInput').addEventListener('input', (e) => {
+            document.getElementById('mainTitle').textContent = e.target.value || 'Haier';
+        });
+
+        document.getElementById('subTitleInput').addEventListener('input', (e) => {
+            document.getElementById('subTitle').textContent = e.target.value || '以无界生态共创无限可能';
+        });
+
+        document.getElementById('nameInput').addEventListener('input', (e) => {
+            document.getElementById('workerName').textContent = e.target.value || '牛马';
+        });
+
+        document.getElementById('modelInput').addEventListener('input', (e) => {
+            document.getElementById('modelNo').textContent = e.target.value || '996-007（天选打工人）';
+        });
+
+        document.getElementById('levelsInput').addEventListener('input', (e) => {
+            const levels = e.target.value.split('\n');
+            for(let i = 0; i < 5; i++) {
+                if(levels[i]) {
+                    document.getElementById(`level${i+1}`).textContent = `${i+1} ${levels[i]}`;
+                }
+            }
+        });
+
+        document.getElementById('powerInput').addEventListener('input', (e) => {
+            document.getElementById('powerConsumption').textContent = e.target.value || '>8小时';
+        });
+
+        document.getElementById('footerInput').addEventListener('input', (e) => {
+            document.getElementById('footerText').textContent = e.target.value || '天天加班加点没点素质是应该的！😭';
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+        const container = document.querySelector('.container');
+        html2canvas(container, {
+            backgroundColor: null,  // 允许捕获背景
+            useCORS: true,         // 允许跨域图片
+            scale: 2               // 提高图片质量
+        }).then(canvas => {
+            const link = document.createElement('a');
+            // 生成时间戳
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}`;
+            link.download = `打工人能耗标识_${timestamp}.jpg`;
+            // 将图片格式改为 JPEG，质量设为 0.9
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+        });
+    });
+
+    </script>
+</body>
+</html>
