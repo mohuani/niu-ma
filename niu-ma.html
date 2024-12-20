@@ -261,7 +261,7 @@
             <div class="info">
                 <div class="info-row">
                     <span class="info-label">打工人姓名</span>
-                    <span class="info-value" id="workerName">牛马</span>
+                    <span class="info-value" id="workerName">牛马001号</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">规格型号</span>
@@ -308,12 +308,12 @@
             <button id="downloadBtn" class="download-btn">下载图片</button>
             <h3>自定义内容</h3>
             <div class="input-group">
-                <label>主标题</label>
-                <input type="text" id="mainTitleInput" placeholder="输入主标题">
+                <label>公司名称</label>
+                <input type="text" id="mainTitleInput" placeholder="输入公司名称">
             </div>
             <div class="input-group">
-                <label>副标题</label>
-                <input type="text" id="subTitleInput" placeholder="输入副标题">
+                <label>Slogan</label>
+                <input type="text" id="subTitleInput" placeholder="输入Slogan">
             </div>
             <div class="input-group">
                 <label>打工人姓名</label>
@@ -338,7 +338,7 @@
         </div>
     </div>
 
-   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+   <script src="html2canvas.min.js"></script>
    <script>
         // 监听输入变化并更新内容
         document.getElementById('mainTitleInput').addEventListener('input', (e) => {
@@ -375,22 +375,51 @@
         });
 
         document.getElementById('downloadBtn').addEventListener('click', () => {
-        const container = document.querySelector('.container');
-        html2canvas(container, {
-            backgroundColor: null,  // 允许捕获背景
-            useCORS: true,         // 允许跨域图片
-            scale: 2               // 提高图片质量
-        }).then(canvas => {
-            const link = document.createElement('a');
-            // 生成时间戳
-            const now = new Date();
-            const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}`;
-            link.download = `打工人能耗标识_${timestamp}.jpg`;
-            // 将图片格式改为 JPEG，质量设为 0.9
-            link.href = canvas.toDataURL('image/jpeg', 0.9);
-            link.click();
+            const container = document.querySelector('.container');
+            // 获取容器的背景色
+            const computedStyle = window.getComputedStyle(document.body);
+            html2canvas(container, {
+                backgroundColor: 'transparent',  // 设置为透明
+                useCORS: true,         // 允许跨域图片
+                scale: 2,              // 提高图片质量
+                allowTaint: true,      // 允许跨域元素
+                foreignObjectRendering: true,  // 启用外部对象渲染
+
+                width: container.offsetWidth + 4,      // 确保宽度准确
+                height: container.offsetHeight + 4,    // 确保高度准确
+                x: -container.offsetLeft,           // 确保位置准确
+                y: -container.offsetTop           // 确保位置准确
+
+            }).then(canvas => {
+                // 创建一个新的画布来合成最终图片
+                const finalCanvas = document.createElement('canvas');
+                const ctx = finalCanvas.getContext('2d');
+                finalCanvas.width = canvas.width;
+                finalCanvas.height = canvas.height;
+
+                // 创建渐变背景
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#0093E9');
+                gradient.addColorStop(0.5, '#80D0C7');
+                gradient.addColorStop(1, '#48BBE9');
+
+                // 绘制背景
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 绘制内容
+                ctx.drawImage(canvas, 0, 0);
+
+                const link = document.createElement('a');
+                // 生成时间戳
+                const now = new Date();
+                const timestamp = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}`;
+                link.download = `打工人能耗标识_${timestamp}.jpg`;
+                // 将图片格式改为 JPEG，质量设为 0.9
+                link.href = finalCanvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+            });
         });
-    });
 
     </script>
 </body>
