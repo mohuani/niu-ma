@@ -1,2 +1,2 @@
 ### 牛马能耗标识
-![alt text](image.png)
+![alt text](niu-ma-image.jpg)
